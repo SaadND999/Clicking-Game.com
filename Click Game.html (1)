@@ -1,0 +1,245 @@
+<!doctype html>
+<html> 
+ <head> 
+  <style>
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .intro {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: slideIn 2s ease-in-out;
+  }
+
+  .intro-content {
+    text-align: center;
+    color: white;
+    transition: opacity 1s ease-in-out;
+  }
+
+  .hidden {
+    opacity: 0;
+  }
+
+  .dot {
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  #retryButton {
+    display: none;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+</style>  
+ <style type="text/css" id="dcoder_stylesheet"><style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #f0f0f0; /* لون خلفية الصفحة */
+  }
+
+  .dot {
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out; /* تأثير عند التحول */
+  }
+
+  .dot:hover {
+    transform: scale(1.2); /* تكبير النقطة عند تحويل المؤشر عليها */
+  }</style></head> 
+ <body> 
+  <div class="intro"> 
+   <div class="intro-content" id="welcomeText"> 
+    <h1>Welcome to the Clicking Game</h1> 
+    <p>Click on the dots as many times as you can within the selected time!</p> <label for="timeSelect">Select Time: </label> <select id="timeSelect"> <option value="10">10 seconds</option> <option value="20">20 seconds</option> <option value="30">30 seconds</option> </select> <button id="startButton">Start Game</button> 
+   </div> 
+  </div> <!-- نقطة واحدة للبداية --> 
+  <div class="dot" id="dot1"></div> <!-- نقطة رقم 2 --> 
+  <div class="dot" id="dot2"></div> <!-- نقطة رقم 3 --> 
+  <div class="dot" id="dot3"></div> <!-- نقطة رقم 4 --> 
+  <div class="dot" id="dot4"></div> <!-- نقطة رقم 5 --> 
+  <div class="dot" id="dot5"></div> <!-- نقطة رقم 6 --> 
+  <div class="dot" id="dot6"></div> <!-- نقطة رقم 7 --> 
+  <div class="dot" id="dot7"></div> <!-- نقطة رقم 8 --> 
+  <div class="dot" id="dot8"></div> <!-- نقطة رقم 9 --> 
+  <div class="dot" id="dot9"></div> 
+  <p>Clicks: <span id="clickCount">0</span></p> 
+  <p>Time Left: <span id="timer">10</span> seconds</p> 
+  <audio id="alarmSound" src="alarm.mp3"></audio> <button id="retryButton">Retry</button> 
+  <script>
+  var clickCount = 0;
+  var timer = 10;
+  var interval;
+  var alarmSound = document.getElementById("alarmSound");
+
+  document.getElementById("startButton").addEventListener("click", function() {
+    document.querySelector(".intro").style.display = "none";
+    document.getElementById("welcomeText").classList.add("hidden");
+    var selectedTime = document.getElementById("timeSelect").value;
+    timer = parseInt(selectedTime);
+    startGame();
+  });
+
+  document.getElementById("retryButton").addEventListener("click", function() {
+    document.querySelector(".intro").style.display = "flex";
+    document.getElementById("welcomeText").classList.remove("hidden");
+    document.getElementById("retryButton").style.display = "none";
+    resetGame();
+  });
+
+  function resetGame() {
+    clickCount = 0;
+    clearInterval(interval);
+    document.getElementById("clickCount").textContent = clickCount;
+    document.getElementById("timer").textContent = timer + " seconds";
+    // إظهار النقاط مرة أخرى عند إعادة اللعبة
+    document.querySelectorAll(".dot").forEach(function(dot) {
+      dot.style.display = "block";
+    });
+  }
+
+  function startGame() {
+    interval = setInterval(updateTimer, 1000);
+    var dots = document.querySelectorAll(".dot");
+    dots.forEach(function(dot) {
+      dot.style.left = getRandomInt(0, 500) + "px";
+      dot.style.top = getRandomInt(0, 500) + "px";
+
+      dot.addEventListener("click", function() {
+        incrementClickCount();
+        dot.style.left = getRandomInt(0, 500) + "px";
+        dot.style.top = getRandomInt(0, 500) + "px";
+      });
+    });
+  }
+
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function updateTimer() {
+    timer--;
+    document.getElementById("timer").textContent = timer + " seconds";
+    if (timer === 0) {
+      clearInterval(interval);
+      document.querySelectorAll(".dot").forEach(function(dot) {
+        dot.style.display = "none"; // تختفي النقاط عندما ينتهي الوقت
+      });
+      alarmSound.play();
+      document.getElementById("retryButton").style.display = "block";
+    }
+  }
+
+  function incrementClickCount() {
+    clickCount++;
+    document.getElementById("clickCount").textContent = clickCount;
+  }
+</script>   
+ 
+<script type="text/javascript" id="dcoder_script"><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clicking Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #f0f0f0;
+    }
+
+    .dot {
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      border-radius: 50%;
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .dot:hover {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+  <script>
+    let score = 0;
+    let timeLeft = 10;
+    let timer;
+    let dots = [];
+
+    function createDot() {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      const x = Math.random() * (window.innerWidth - 50);
+      const y = Math.random() * (window.innerHeight - 50);
+      dot.style.left = x + 'px';
+      dot.style.top = y + 'px';
+      dot.addEventListener('click', () => {
+        dot.remove();
+        score++;
+        document.getElementById('score').innerText = 'Score: ' + score;
+        increaseTime(1);
+      });
+      document.body.appendChild(dot);
+      dots.push(dot);
+    }
+
+    function increaseTime(seconds) {
+      timeLeft += seconds;
+      document.getElementById('time').innerText = 'Time Left: ' + timeLeft + 's';
+    }
+
+    function updateTimer() {
+      timeLeft--;
+      document.getElementById('time').innerText = 'Time Left: ' + timeLeft + 's';
+      if (timeLeft === 0) {
+        clearInterval(timer);
+        alert('Game Over! Your score is ' + score);
+        dots.forEach(dot => dot.remove());
+      }
+    }
+
+    function startGame() {
+      score = 0;
+      timeLeft = 10;
+      document.getElementById('score').innerText = 'Score: ' + score;
+      document.getElementById('time').innerText = 'Time Left: ' + timeLeft + 's';
+      timer = setInterval(updateTimer, 1000);
+      setInterval(createDot, 1000);
+    }
+
+    window.onload = startGame;</script></body></html>
